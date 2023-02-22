@@ -66,14 +66,21 @@ class Pipeline():
                 step = self.steps[key]
                 args = None
 
-                step.box.logger('Running')
-
                 # Always pass the previous steps output to the next thing 
                 # (unless they specifically need something else)
                 
                 if step.needs is not None:
                     # Find the result of the needed step
-                    arg_list = [ self.steps[key].result for key in step.needs ]
+                    arg_list = []
+
+                    for key in step.needs:
+                        # Add the initial pipeline param to it
+                        if key == 'pipeline':
+                            arg_list.append(data)
+                            continue
+
+                        arg_list.append(self.steps[key].result)
+
                     # Turn them into a tuple since the executor will spread the arguments
                     args = tuple(arg_list)
                 else:
@@ -84,8 +91,6 @@ class Pipeline():
 
                 step.execute(args)
                 prev_step = key
-
-                step.box.logger('Finished')
         except Exception as e:
             print('[-] Stopped pipeline execution. Something failed:')
             print(e)

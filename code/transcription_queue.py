@@ -18,9 +18,6 @@ class TranscriptionQueue():
 
             on_next(file)
 
-            file.delete()
-
-            print('[+] Done transcribing file -> {}'.format(file.filename))
             print('[i] Items left in queue: {}'.format(len(self.items)))
             print('\n\n\n\n')
 

@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from recorder import Recorder
 from transcription_queue import TranscriptionQueue
 from hotkey_listener import HotkeyListener
-from pipeline import pipeline, use, Transcriber, Notion, LocalSave
+from pipeline import pipeline, use, Transcriber, Notion, LocalSave, FileSystem
 
 load_dotenv()
 
@@ -44,6 +44,12 @@ highline = pipeline(
         LocalSave(),
         method='save_highlight',
         needs=[ 'transcribe' ]
+    ),
+    use(
+        'cleanup',
+        FileSystem(),
+        method='delete_file',
+        needs=[ 'pipeline' ]
     )
 )
 
