@@ -53,6 +53,7 @@ Remove any variables that you don't need.
 If you don't want anything to do with notion, remove the whole notion section, and so on.
 
 > The required variables are `HIGHLIGHT_LENGTH_IN_SECONDS`, `INPUT_DEVICE_INDEX` and `WHISPER_SIZE`
+
 > If you don't know what index your input device is at you can run the program with the `--list-devices` parameter to get a list of all devices and their indexes.
 
 ### 4. Run
