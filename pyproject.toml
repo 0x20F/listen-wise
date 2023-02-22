@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "sanguine"
+version = "0.1.0"
+description = ""
+authors = ["0x20F <0x20fa@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+numpy = "^1.24.2"
+openai-whisper = {git = "https://github.com/openai/whisper.git"}
+pyaudio = "^0.2.13"
+wave = "^0.0.2"
+pynput = "^1.7.6"
+winrt = "^1.0.21033.1"
+notion-client = "^2.0.0"
+python-dotenv = "^0.21.1"
+pydantic = "^1.10.5"
+win11toast = "^0.32"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
