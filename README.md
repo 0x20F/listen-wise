@@ -9,7 +9,7 @@ A simple program for avid listeners of audio content.
 ## Why?
 Because sometimes you just want to listen to the audiobook/podcast/youtube video without also rushing to take notes. This allows you to quickly mark the passages that you deemed important and continue listening.
 
-Knowing well that you'll come back and review your saved notes later.
+Knowing well that you'll come back and review your saved notes later. The Ai won't be perfect.
 
 Oh and also we want all this magic to happen without us needing an internet connection (unless you use notion, readwise, or other things). Transcription to a local file works without internet.
 <br/>
@@ -18,7 +18,7 @@ Oh and also we want all this magic to happen without us needing an internet conn
 A few things to keep in mind:
 1. It only runs on Windows for the time being.
 2. You need to figure out which device the recording should happen through on your own.
-3. You need to figure out your own Notion tokens.
+3. You need to figure out your own Notion (and other API) tokens.
 
 With that in mind, here's how you get it going.
 
@@ -52,7 +52,8 @@ Remove any variables that you don't need.
 
 If you don't want anything to do with notion, remove the whole notion section, and so on.
 
-> The required variables are `HIGHLIGHT_LENGTH_IN_SECONDS` and `WHISPER_SIZE`
+> The required variables are `HIGHLIGHT_LENGTH_IN_SECONDS`, `INPUT_DEVICE_INDEX` and `WHISPER_SIZE`
+> If you don't know what index your input device is at you can run the program with the `--list-devices` parameter to get a list of all devices and their indexes.
 
 ### 4. Run
 Once configured, you can run the entire program with the following:
