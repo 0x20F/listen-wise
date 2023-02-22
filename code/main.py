@@ -37,13 +37,13 @@ highline = pipeline(
         'notion', 
         Notion(), 
         method='append_highlight',
-        needs=[ 'transcribe' ]
+        needs=[ 'transcribe', 'pipeline' ]
     ),
     use(
         'local-storage',
         LocalSave(),
         method='save_highlight',
-        needs=[ 'transcribe' ]
+        needs=[ 'transcribe', 'pipeline' ]
     ),
     use(
         'cleanup',

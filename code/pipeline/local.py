@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
 from pipeline import PipelineUsable
+from datatypes import File
 
 load_dotenv()
 
@@ -17,7 +18,7 @@ class LocalSave(PipelineUsable):
 
         self.logger('Initializing local storage in: {}'.format(LOCAL_PATH))
 
-    def save_highlight(self, info: tuple[str, str]) -> None:
+    def save_highlight(self, info: tuple[str, str], file_data: File) -> None:
         if not LOCAL_PATH:
             return
 
@@ -28,5 +29,6 @@ class LocalSave(PipelineUsable):
         file = open(LOCAL_PATH, 'a')
         file.write('{}\n'.format(title))
         file.write('{}\n'.format(text))
+        file.write('created at: {}\n'.format(file_data.format_created_at()))
         file.write('\n\n')
         file.close()

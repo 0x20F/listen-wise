@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 from notion_client import Client
 from pipeline import PipelineUsable
+from datatypes import File
 
 load_dotenv()
 
@@ -20,7 +21,7 @@ class Notion(PipelineUsable):
         else:
             self.logger('Notion integration is not setup. Skipping.')
 
-    def append_highlight(self, info: tuple[str, str]) -> None:
+    def append_highlight(self, info: tuple[str, str], file: File) -> None:
         if self.client is None:
             return
 
@@ -47,6 +48,21 @@ class Notion(PipelineUsable):
                         'type': 'text',
                         'text': {
                             'content': text
+                        }
+                    }]
+                }
+            },
+            {
+                'type': 'paragraph',
+                'paragraph': {
+                    'rich_text': [{
+                        'type': 'text',
+                        'text': {
+                            'content': 'created at: {}'.format(file.format_created_at())
+                        },
+                        'annotations': {
+                            'italic': True,
+                            'color': 'gray'
                         }
                     }]
                 }
