@@ -1,4 +1,5 @@
 import threading, asyncio
+import sys
 from dotenv import load_dotenv
 
 # Our own imports
@@ -16,6 +17,13 @@ alt_pressed = False
 
 
 recorder = Recorder()
+
+if len(sys.argv) > 1:
+    if sys.argv[1] == '--list-devices':
+        recorder.enumerate_devices()
+        exit()
+
+
 queue = TranscriptionQueue()
 hotkeys = HotkeyListener(recorder=recorder, queue=queue)
 

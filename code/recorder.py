@@ -14,6 +14,7 @@ RATE = 44100
 HIGHLIGHT_SECONDS = int(os.getenv('HIGHLIGHT_LENGTH_IN_SECONDS', 30))
 SILENCE_THRESHOLD = 1
 TOTAL_ALLOWED_FRAMES = RATE * HIGHLIGHT_SECONDS / CHUNK
+INPUT_DEVICE_INDEX=int(os.getenv('INPUT_DEVICE_INDEX'))
 
 
 def is_mostly_silence(audio_data, threshold):
@@ -31,12 +32,12 @@ class Recorder():
             format=FORMAT,
             rate=RATE,
             input=True,
-            input_device_index=2, # Stereo mix on windows
+            input_device_index=INPUT_DEVICE_INDEX, # Stereo mix on windows
             frames_per_buffer=CHUNK
         )
 
     def record(self):
-        print('[~] Recorder started')
+        print('[~] Recorder started on device with id {}'.format(INPUT_DEVICE_INDEX))
 
         while not self.should_exit:
             data = self.stream.read(CHUNK)
@@ -79,3 +80,15 @@ class Recorder():
         wf.close()
 
         return data
+
+    def enumerate_devices(self):
+        info = self.client.get_host_api_info_by_index(0)
+        numdevices = info.get('deviceCount')
+
+        # for each audio device, determine if is an input or an output and add it to the appropriate list and dictionary
+        for i in range (0, numdevices):
+            if self.client.get_device_info_by_host_api_device_index(0, i).get('maxInputChannels') > 0:
+                print("Input Device id ", i, " - ", self.client.get_device_info_by_host_api_device_index(0, i).get('name'))
+
+            if self.client.get_device_info_by_host_api_device_index(0, i).get('maxOutputChannels') > 0:
+                print("Output Device id ", i, " - ", self.client.get_device_info_by_host_api_device_index(0, i).get('name'))
