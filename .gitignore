@@ -1,3 +1,4 @@
 highlights.txt
 .env
 */**/__pycache__
+.vscode

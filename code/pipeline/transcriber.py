@@ -30,4 +30,4 @@ class Transcriber(PipelineUsable):
 
             title = '{}{}'.format(artist, info.title)
 
-        return (title, result['text'])
+        return (title, str(result['text']))

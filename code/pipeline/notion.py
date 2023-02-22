@@ -28,7 +28,7 @@ class Notion(PipelineUsable):
 
         title, text = info
 
-        self.client.blocks.children.append(self.NOTION_PAGE_ID, children=[
+        self.client.blocks.children.append(str(self.NOTION_PAGE_ID), children=[
             {
                 'type': 'heading_2',
                 'heading_2': {

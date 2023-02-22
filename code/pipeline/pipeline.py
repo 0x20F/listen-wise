@@ -1,4 +1,5 @@
 from typing import Callable, List, Any, Optional, Dict
+from datetime import datetime
 
 
 class PipelineUsable():
@@ -16,7 +17,7 @@ class PipelineStep():
     def __init__(
         self, name: str, box: PipelineUsable,
         needs: Optional[List[str]],
-        method: Optional[str]
+        method: str
     ) -> None:
         self.name = name
         self.box = box
@@ -29,16 +30,17 @@ class PipelineStep():
 
         # If we haven't exploded, setup the module
         # Logger is customised for each pipeline step
-        self.box.with_logger(
-            lambda message: print('[{}] {}'.format(name, message))
-        )
+        def logger(message: str):
+            now = datetime.now()
+            formatted = now.strftime('%H:%M:%S')
+            print('\033[0;90m{}\033[00m [{}] {}'.format(formatted, name, message))
+
+        self.box.with_logger(logger)
         self.box.setup()
         
 
     def execute(self, args):
         is_tuple = type(args) is tuple
-
-        print(args)
 
         if is_tuple:
             self.result = self.runnable(*args)
@@ -76,7 +78,7 @@ class Pipeline():
                     args = tuple(arg_list)
                 else:
                     if index > 0:
-                        args = tuple(self.steps[prev_step].result)
+                        args = tuple(self.steps[prev_step].result or [])
                     else:
                         args = data
 

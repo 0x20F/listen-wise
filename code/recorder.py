@@ -14,7 +14,7 @@ RATE = 44100
 HIGHLIGHT_SECONDS = int(os.getenv('HIGHLIGHT_LENGTH_IN_SECONDS', 30))
 SILENCE_THRESHOLD = 1
 TOTAL_ALLOWED_FRAMES = RATE * HIGHLIGHT_SECONDS / CHUNK
-INPUT_DEVICE_INDEX=int(os.getenv('INPUT_DEVICE_INDEX'))
+INPUT_DEVICE_INDEX=int(os.getenv('INPUT_DEVICE_INDEX') or 2)
 
 
 def is_mostly_silence(audio_data, threshold):
@@ -83,12 +83,12 @@ class Recorder():
 
     def enumerate_devices(self):
         info = self.client.get_host_api_info_by_index(0)
-        numdevices = info.get('deviceCount')
+        numdevices = int(info.get('deviceCount') or 0)
 
         # for each audio device, determine if is an input or an output and add it to the appropriate list and dictionary
         for i in range (0, numdevices):
-            if self.client.get_device_info_by_host_api_device_index(0, i).get('maxInputChannels') > 0:
+            if int(self.client.get_device_info_by_host_api_device_index(0, i).get('maxInputChannels') or 0) > 0:
                 print("Input Device id ", i, " - ", self.client.get_device_info_by_host_api_device_index(0, i).get('name'))
 
-            if self.client.get_device_info_by_host_api_device_index(0, i).get('maxOutputChannels') > 0:
+            if int(self.client.get_device_info_by_host_api_device_index(0, i).get('maxOutputChannels') or 0) > 0:
                 print("Output Device id ", i, " - ", self.client.get_device_info_by_host_api_device_index(0, i).get('name'))
