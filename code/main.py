@@ -11,11 +11,6 @@ from pipeline import pipeline, use, Transcriber, Notion, LocalSave, FileSystem
 load_dotenv()
 
 
-# Hotkey constants
-ctrl_pressed = False
-alt_pressed = False
-
-
 recorder = Recorder()
 
 if len(sys.argv) > 1:
