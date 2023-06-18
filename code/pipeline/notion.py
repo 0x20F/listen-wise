@@ -9,6 +9,7 @@ load_dotenv()
 class Notion(PipelineUsable):
     # Notion integration constants
     NOTION_PAGE_ID = os.getenv('NOTION_PAGE')
+    NOTION_DATABASE = os.getenv('NOTION_DATABASE')
     NOTION_TOKEN = os.getenv('NOTION_TOKEN')
     
     isOn = NOTION_TOKEN and NOTION_PAGE_ID
@@ -29,36 +30,53 @@ class Notion(PipelineUsable):
 
         title, text = info
 
-        self.client.blocks.children.append(str(self.NOTION_PAGE_ID), children=[
-            {
-                'type': 'heading_2',
-                'heading_2': {
-                    'rich_text': [{
-                        'type': 'text',
-                        'text': {
-                            'content': title
-                        }
-                    }]
-                },
-            },
-            {
-                'type': 'paragraph',
-                'paragraph': {
-                    'rich_text': [{
-                        'type': 'text',
-                        'text': {
-                            'content': text
-                        }
-                    }]
+        created_page_id = None
+
+        if self.NOTION_DATABASE:
+            pages = self.client.databases.query(
+                database_id=self.NOTION_DATABASE,
+                filter={
+                    'property': 'Name',
+                    'rich_text': {
+                        'equals': title
+                    }
                 }
-            },
+            )
+
+            if len(list(pages['results'])) == 0:
+                new_page = {
+                    "Name": { "title": [{ "text": { "content": title } }] },
+                }
+
+                self.client.pages.create(
+                    parent={"database_id": self.NOTION_DATABASE},
+                    properties=new_page
+                )
+
+                pages = self.client.databases.query(
+                    database_id=self.NOTION_DATABASE,
+                    filter={
+                        'property': 'Name',
+                        'rich_text': {
+                            'equals': title
+                        }
+                    }
+                )
+
+                created_page_id = pages['results'][0]['id']
+            else:
+                created_page_id = pages['results'][0]['id']
+
+        page_id = self.NOTION_PAGE_ID if self.NOTION_DATABASE is None else created_page_id
+
+        self.client.blocks.children.append(str(page_id), children=[
             {
                 'type': 'paragraph',
                 'paragraph': {
                     'rich_text': [{
                         'type': 'text',
                         'text': {
-                            'content': 'created at: {}'.format(file.format_created_at())
+                            'content': 'saved at: {}'.format(file.format_created_at())
                         },
                         'annotations': {
                             'italic': True,
@@ -73,6 +91,17 @@ class Notion(PipelineUsable):
                     'rich_text': [{
                         'type': 'text',
                         'text': {
+                            'content': text.strip()
+                        }
+                    }]
+                }
+            },
+            {
+                'type': 'paragraph',
+                'paragraph': {
+                    'rich_text': [{
+                        'type': 'text',
+                        'text': {
                             'content': ''
                         }
                     }]
@@ -88,6 +117,6 @@ class Notion(PipelineUsable):
                         }
                     }]
                 }
-            }
+            },
         ])
 
